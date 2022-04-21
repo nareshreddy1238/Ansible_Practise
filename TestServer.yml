@@ -1,0 +1,29 @@
+---
+- name: Build Server Config
+  hosts: centos
+  become: yes
+   
+  tasks:
+    - name: Installing java
+      yum:
+        name: java-1.8.0*
+        state: present
+
+    - name: Download SonarQube Repo
+      get_url:
+        url: https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.7.7.zip
+        dest: /home/centos
+
+    - name: unzip install
+      package:
+        name: unzip
+        state: present
+ 
+    - name: unzip SonarQube Package
+      unarchive:
+        src: /home/centos/sonarqube-6.7.7.zip
+        dest: /home/centos
+
+    - name: Starting Sonar Qube
+      shell: nohup /home/centos/sonarqube-6.7.7/bin/linux-x86-64/sonar.sh start &
+...   

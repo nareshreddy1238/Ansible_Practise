@@ -1,0 +1,51 @@
+---
+- name: update web servers
+  hosts: centos
+  become: yes
+
+  handlers:
+  - name: Restart Apache
+    service:
+      name: httpd
+      state: restarted
+
+  tasks:
+  - name: ensure apache is installed
+    package:
+      name: httpd
+      state: present
+
+  - name: ensure apache is started
+    service:
+      name: httpd
+      state: started
+
+  - name: ensure apache is enabled
+    service:
+      name: httpd
+      enabled: yes
+
+  - name: ensure git is installed
+    package:
+      name: git
+      state: present
+
+  - name: ensure code is update from git repo
+    git:
+      repo: https://github.com/nareshreddy1238/ecomm.git
+      dest: /var/www/html
+
+  - name: httpd listen on port 8081
+    lineinfile: 
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^Listen '
+      insertafter: '^#Listen '
+      line: Listen 9090
+    notify: 
+    - Restart Apache
+
+  - name: ensure selinux is permissive
+    selinux:
+      policy: targeted
+      state: permissive
+...

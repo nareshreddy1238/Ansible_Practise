@@ -1,0 +1,46 @@
+---
+- name: Nexus Server Config
+  hosts: web
+  gather_facts: true
+  become: yes
+  vars:
+    build_name: Javaweb
+    id_name: release
+    host_name: 192.168.0.23
+    host_port: 8081    
+    username: admin
+   
+  tasks:
+    - name: Installing java
+      yum:
+        name: java-1.8.0*
+        state: present
+
+    - name: Download Sonar-Nexus Package
+      get_url:
+        url: https://download.sonatype.com/nexus/oss/nexus-2.14.18-01-bundle.tar.gz
+        dest: /home/centos
+
+    - name: unzip install
+      package:
+        name: unzip
+        state: present
+ 
+    - name: unzip Sonar-Nexus Package
+      unarchive:
+        src: /home/centos/nexus-2.14.18-01-bundle.tar.gz
+        dest: /home/centos
+
+    - name: Update Artificat file
+      template: 
+        src: pom.xml.j2
+        dest: /home/centos/{{build_name}}/pom.xml
+
+    - name: Update Nexus file
+      template:
+        src: settings.xml.j2
+        dest: /usr/share/maven/conf/settings.xml
+
+    - name: Starting Sonar Qube
+      shell: nohup /home/centos/nexus-2.14.18-01/bin/nexus start &
+...   
