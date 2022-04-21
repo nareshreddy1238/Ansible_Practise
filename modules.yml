@@ -1,0 +1,41 @@
+---
+- name: update web servers
+  hosts: centos
+ 
+  tasks:
+   - name: Connection check
+     ping: 
+
+   - name: File or Directory create
+     file:
+        path: /home/centos/web
+        state: directory
+
+   - name: File or content copy
+     copy:
+        dest: /home/centos/web/hello.txt
+        content: hello
+
+   - name: URL or Download file from internet
+     get_url:
+        url: https://github.com/ravi2krishna/ansible/blob/eea692a55584f9457935432611deb65aef9ab9b6/14/httpd.conf
+        dest: /home/centos
+
+   - name: Linux commands
+     command:
+        cmd: df -h
+
+   - name: Install Package
+     become: yes
+     package:
+        name: httpd
+        state: present
+
+   - name: Services
+     become: yes
+     service:
+        name: httpd
+        state: started
+
+...
+
