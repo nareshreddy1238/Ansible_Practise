@@ -1,0 +1,11 @@
+---
+- name: ensure apache is installed
+  package:
+    name: httpd
+    state: present
+
+- name: ensure git is installed
+  package:
+    name: git
+    state: present
+...

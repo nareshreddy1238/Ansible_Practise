@@ -1,0 +1,22 @@
+---
+- name: ensure apache is started
+  service:
+    name: httpd
+    state: started
+
+- name: ensure code is update from git repo
+  git:
+    repo: https://github.com/nareshreddy1238/ecomm.git
+    dest: /var/www/html
+
+- name: httpd listen on port 8081
+  lineinfile: 
+    path: /etc/httpd/conf/httpd.conf
+    regexp: '^Listen '
+    insertafter: '^#Listen '
+    line: Listen 9091
+  notify: 
+  - Restart Apache
+
+
+...
